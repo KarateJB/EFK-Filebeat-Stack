@@ -52,7 +52,7 @@ filebeat.inputs:
 #  pretty: true
 #only one output is allowed
 output.logstash:
-  hosts: ['172.17.176.1:5044']
+  hosts: ['192.168.64.212:5044']
   # hosts: ['host.docker.internal:5044']
 
 # for debug

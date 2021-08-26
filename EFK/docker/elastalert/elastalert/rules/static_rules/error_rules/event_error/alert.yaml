@@ -11,7 +11,7 @@ realert:
 filter:
   - query:
       query_string:
-        query: "level: ERROR" OR "level: FATAL"
+        query: "level: ERROR OR level: FATAL"
 alert_text_type: alert_text_only
 alert_text: |
     <style>
