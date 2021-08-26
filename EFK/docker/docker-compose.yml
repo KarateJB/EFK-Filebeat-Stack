@@ -1,6 +1,6 @@
 version: "3"
 services:
-  logmon-fluentd:
+  fluentd:
     build:
       context: ./fluentd/.
       dockerfile: fluentd.dockerfile
@@ -11,20 +11,20 @@ services:
     environment:
       - FLUENT_UID=0
     links:
-      - logmon-elasticsearch
+      - elasticsearch
     ports:
       - "24224:24224"
       - "24224:24224/udp"
       - "5044:5044"
     privileged: true
     depends_on:
-      - logmon-elasticsearch
+      - elasticsearch
     networks:
-      - logmon
+      - default
     labels:
       org.label-schema.group: "log-monitor"
 
-  logmon-elasticsearch:
+  elasticsearch:
     image: elasticsearch:7.8.1
     container_name: logmon-elasticsearch
     hostname: logmon-elasticsearch
@@ -32,35 +32,36 @@ services:
       - ../data/elasticsearch:/usr/share/elasticsearch/data
     environment:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
-      - cluster.initial_master_nodes=logmon-elasticsearch
+      # - cluster.initial_master_nodes=logmon-elasticsearch
+      - discovery.type=single-node
     expose:
       - 9200
     ports:
       - 9200:9200
     networks:
-      - logmon
+      - default
     labels:
       org.label-schema.group: "log-monitor"
 
-  logmon-kibana:
+  kibana:
     image: kibana:7.8.1
     container_name: logmon-kibana
     hostname: logmon-kibana
     links:
-      - logmon-elasticsearch
+      - elasticsearch
     depends_on:
-      - logmon-elasticsearch
+      - elasticsearch
     environment:
       - ELASTICSEARCH_HOSTS=http://logmon-elasticsearch:9200
     restart : always
     ports:
       - 5601:5601
     networks:
-      - logmon
+      - default
     labels:
       org.label-schema.group: "log-monitor"
 
-  logmon-curator:
+  curator:
     build:
       context: ./curator/.
       dockerfile: dockerfile
@@ -69,30 +70,32 @@ services:
     container_name: logmon-curator
     hostname: logmon-curator
     links:
-      - logmon-elasticsearch
+      - elasticsearch
     networks:
-      - logmon
+      - default
     labels:
       org.label-schema.group: "log-monitor"
     depends_on:
-      - logmon-elasticsearch
+      - elasticsearch
     volumes:
       - ./curator:/config
 
-  logmon-elastalert:
+  elastalert:
     build:
       context: ./elastalert/.
       dockerfile: elastalert.dockerfile
     container_name: logmon-elastalert
     hostname: logmon-elastalert
-    environment:
-      - TEAMS_LOG_ALERT_WEBHOOK=${TEAMS_LOG_ALERT_WEBHOOK}
-      - TEAMS_LOG_HEARTBEAT_WEBHOOK=${TEAMS_LOG_HEARTBEAT_WEBHOOK}
+    # environment:
+      # - TEAMS_LOG_ALERT_WEBHOOK=${TEAMS_LOG_ALERT_WEBHOOK}
+      # - TEAMS_LOG_HEARTBEAT_WEBHOOK=${TEAMS_LOG_HEARTBEAT_WEBHOOK}
+    volumes:
+      - ./elastalert/config/mailtrap_credentials.yaml:/opt/elastalert/config/mailtrap_credentials.yaml
     networks:
-      - logmon
+      - default
     labels:
       org.label-schema.group: "log-monitor"
 
 networks:
-  logmon:
+  default:
     driver: bridge

@@ -1,4 +1,5 @@
 # EFK-Filebeat-Stack
+
 此Repo是個簡單的 log monitor 架構，由 Filebeat 蒐集並傳送 log 到 fluentd 進行過濾後儲存於 elasticsearch。最後在 kibana 呈現 log。
 
 這個 stack 同時包含了用來定期清理 log 的 curator 以及用來監控並發送警訊的 elastalert。
@@ -50,4 +51,22 @@ docker ps
 3. 在 docker 路徑下( /...where_you_deploy.../Filebeat/linux/docker)以docker-compose up啟動服務。
 ```
 docker-compose up
+```
+
+
+
+## Links
+
+http://localhost:9200/_cat/indices?v
+
+http://localhost:5601/app/kibana#/management/kibana/index_pattern?_g=()
+
+
+## Mail Server Credentials
+
+Create `mailtrap_credentials.yaml` in `EFK\elastalert\config\`.
+
+```yaml
+user: "xxxxx"
+password: "xxxxx"
 ```

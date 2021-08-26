@@ -1,33 +1,34 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+
 set -e
 ## write Teams Webhook from env variable
 export DATASOURCES_PATH="/elastalert/rules/static_rules"
-for file in ${DATASOURCES_PATH}/heartbeat_rules/*
-    do
-        echo $file
-        if [ -d $file ] ; then
-            continue;
-        else
-            sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_HEARTBEAT_WEBHOOK},g" $file || true
-        fi
-    done
-for file in ${DATASOURCES_PATH}/error_rules/*/*
-    do
-        if [ -d $file ] ; then
-            continue;
-        else
-            sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_ALERT_WEBHOOK},g" $file || true
-        fi
-    done
+# for file in ${DATASOURCES_PATH}/heartbeat_rules/*
+#     do
+#         echo $file
+#         if [ -d $file ] ; then
+#             continue;
+#         else
+#             sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_HEARTBEAT_WEBHOOK},g" $file || true
+#         fi
+#     done
+# for file in ${DATASOURCES_PATH}/error_rules/*/*
+#     do
+#         if [ -d $file ] ; then
+#             continue;
+#         else
+#             sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_ALERT_WEBHOOK},g" $file || true
+#         fi
+#     done
 
-for file in ${DATASOURCES_PATH}/event_rules/*/*
-    do
-        if [ -d $file ] ; then
-            continue;
-        else
-            sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_ALERT_WEBHOOK},g" $file || true
-        fi
-    done
+# for file in ${DATASOURCES_PATH}/event_rules/*/*
+#     do
+#         if [ -d $file ] ; then
+#             continue;
+#         else
+#             sed -i "s,ms_teams_webhook_url.*,ms_teams_webhook_url: ${TEAMS_LOG_ALERT_WEBHOOK},g" $file || true
+#         fi
+#     done
 
 
 
@@ -48,7 +49,7 @@ curl --location --request POST 'http://logmon-kibana:5601/api/saved_objects/inde
     --data-raw '{
         "attributes": {
             "title": "logstash*",
-            "timeFieldName": "@timestamp"
+            "timeFieldName": "logdatetime"
         }
     }' || true ;
 curl --location --request POST 'http://logmon-kibana:5601/api/saved_objects/index-pattern/elastalert*?overwrite=True' \

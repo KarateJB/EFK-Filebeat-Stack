@@ -1,3 +1,12 @@
-# ignore container data
-data/
-logs/
+# Mounted path
+[Dd]ata/
+[Ll]ogs/
+
+# Vim
+[._]*.sw[a-p]
+*.un~
+*~
+tags
+
+# include
+!.env
