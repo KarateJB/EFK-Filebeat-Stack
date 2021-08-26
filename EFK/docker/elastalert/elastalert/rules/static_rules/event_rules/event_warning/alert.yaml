@@ -1,0 +1,48 @@
+---
+name: warning-alert
+type: any
+index: logstash-*
+buffer_time:
+  minutes: 5
+run_every:
+  minutes: 1
+realert:
+  minutes: 0
+filter:
+  - query:
+      query_string:
+        query: "level: WARN"
+alert_text_type: alert_text_only
+alert_text: |
+    <style>
+      table, td {{
+        border: 1px solid black;
+      }}
+    </style>
+    <table>
+      <tr><td>Log time</td><td>{0}</td></tr>
+      <tr><td>Class</td><td>{1}</td></tr>
+      <tr><td>Tag</td><td>{2}</td></tr>
+      <tr><td>Message</td><td>{3}</td></tr>
+      <tr><td>Kibana</td><td><a href="http://localhost:5601/app/kibana#/discover/doc/logstash*/{4}?id={5}">See details.</a></td></tr>
+    </table>  
+
+alert_text_args:
+  - logtime
+  - class
+  - fields.tag
+  - message
+  - _index
+  - _id
+alert_subject: "[elastalert][{0}] {1}"
+alert_subject_args:
+  - level
+  - class
+alert:
+  - "email"
+email_format: html
+email:
+  - "target@fake.com" # https://help.mailtrap.io/article/59-troubleshooting#recipient
+smtp_host: smtp.mailtrap.io
+smtp_port: 2525
+smtp_auth_file: /opt/elastalert/config/mailtrap_credentials.yaml

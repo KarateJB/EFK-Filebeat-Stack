@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.8.1
@@ -9,6 +9,16 @@ services:
     volumes:
       - ../data/filebeat/:/usr/share/filebeat/data/
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      # - < actual_log_path_in_host >:< log_path_in_container_and_set_in_filebeat_yaml >
+      - D:\Works\SourceControl\Github\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Auth\:/var/log/filebeat/Auth
+      - D:\Works\SourceControl\Github\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Backend\:/var/log/filebeat/Backend
+      # - C:\Users\ppipp\Documents\JB\Works\SourceControl\GitHub\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Auth\:/var/log/filebeat/Auth
+      # - C:\Users\ppipp\Documents\JB\Works\SourceControl\GitHub\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Backend\:/var/log/filebeat/Backend
+# - < actual_log_path_in_host >:< log_path_in_container_and_set_in_filebeat_yaml >
     command: 
-      - -e=false # set this command to output log to file
+      - -strict.perms=false # disable the permission checking
+      # - -e=false # set this command to output log to file
+
+networks:
+  default:
+    name: logmon-filebeat
+    driver: bridge
