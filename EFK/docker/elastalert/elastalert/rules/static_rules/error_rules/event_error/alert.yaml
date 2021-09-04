@@ -4,6 +4,8 @@ type: any
 index: logstash-*
 buffer_time:
   minutes: 5
+# timeframe:
+#   minutes: 10
 run_every:
   minutes: 1
 realert:

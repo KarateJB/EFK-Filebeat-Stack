@@ -6,14 +6,14 @@ services:
     user: root
     environment:
       - TZ=Asia/Taipei
+      - FLUENTD_HOST=${FLUENTD_HOST}
+      - FLUENTD_PORT=${FLUENTD_PORT}
     volumes:
       - ../data/filebeat/:/usr/share/filebeat/data/
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      # - D:\Works\SourceControl\Github\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Auth\:/var/log/filebeat/Auth
-      # - D:\Works\SourceControl\Github\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Backend\:/var/log/filebeat/Backend
-      - C:\Users\ppipp\Documents\JB\Works\SourceControl\GitHub\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Auth\:/var/log/filebeat/Auth
-      - C:\Users\ppipp\Documents\JB\Works\SourceControl\GitHub\KarateJB\AspNetCore.IdentityServer4.Sample\Logs\Backend\:/var/log/filebeat/Backend
-# - < actual_log_path_in_host >:< log_path_in_container_and_set_in_filebeat_yaml >
+      - ${AUTH_LOG_PATH}:/var/log/filebeat/Auth
+      - ${BACKEND_LOG_PATH}:/var/log/filebeat/Backend
+      # - < actual_log_path_in_host >:< log_path_in_container_and_set_in_filebeat_yaml >
     command: 
       - -strict.perms=false # disable the permission checking
       # - -e=false # set this command to output log to file
